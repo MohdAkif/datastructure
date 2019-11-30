@@ -1,0 +1,24 @@
+def max_heapify(array,i,n):
+    l=2*i+1
+    r=2*i+2
+    if(l<n and array[l]>array[i]):
+        largest=l
+    else:
+        largest=i
+    if(r<n and array[r]>array[largest]):
+        largest=r
+    if(largest!=i):
+        array[i],array[largest]=array[largest],array[i]
+        max_heapify(array,largest,n)
+def build_max_heap(array,n):   
+    for i in range(n//2,-1,-1):
+        max_heapify(array,i,n)
+def heap_sort(array):
+    n=len(array)
+    build_max_heap(array,n)
+    for i in range(n-1,-1,-1):
+        array[i],array[0]=array[0],array[i]
+        max_heapify(array,0,i)
+    return array
+a=heap_sort([3,5,35,32,5,25,3454,32,345])
+print(a)
