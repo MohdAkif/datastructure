@@ -1,0 +1,43 @@
+def initialise(G,s):
+    n=len(G[0])
+    global d,p,x
+    for i in range(n):
+        d.append(x)
+        p.append('nil')
+    d[s]=0
+def relax(u,v,G):
+    global d,p,x
+    if(d[u]+G[u][v]<d[v]):
+        d[v]=d[u]+G[u][v]
+        p[v]=u
+def bellman(G,s):
+    global x
+    initialise(G,s)
+    v=len(G[0])
+    for i in range(v-1):
+        for r in range(v):
+            for c in range(v):
+                if(G[r][c]==0 or G[r][c]==x):
+                    pass
+                else:
+                    relax(r,c,G)
+    for i in range(v):
+        for j in range(v):
+            if(G[i][j]==0 or G[i][j]==x):
+                    pass
+            else:
+                if(d[i]+G[i][j]<d[j]):
+                    return False
+    return True
+                            
+                    
+x=99999 #showing inifinity value
+d=[]
+p=[]
+G=[[0,6,x,x,7],[x,0,5,-4,8],[x,-2,0,x,x],[2,x,7,0,x],[x,x,-3,9,0]]
+s=0
+if(bellman(G,s)):
+    print("minimum distance from source vertex :", d)
+    print("precedence of all vertex from source vertex : ", p)
+else:
+    print('there is negative weight cycle in graph')
