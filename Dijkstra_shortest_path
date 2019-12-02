@@ -25,12 +25,10 @@ while(n!=0):
     array[ind2]=x
     ind=d.index(u)
     n=n-1
-    for i in range(len(G[0])):
-        for j in range(len(G[0])):
-            if(G[i][j]==0 or G[i][j]==x):
-                pass
-            else:
-                if(i==ind):
-                    relax(ind,j,G)
+    for j in range(len(G[0])):
+        if(G[ind][j]==0 or G[ind][j]==x):
+            pass
+        else:
+            relax(ind,j,G)
 print("minimum distance from source vertex :", d)
 print("precedence of all vertex from source vertex : ", p)
