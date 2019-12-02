@@ -1,0 +1,36 @@
+def intialise(G,s):
+    global d,p,x
+    n=len(G[0])
+    for i in range(n):
+        d.append(x)
+        p.append('nil')
+    d[s]=0
+def relax(u,v,G):
+    global x,p,d,array
+    if(d[u]+G[u][v]<d[v]):
+        d[v]=d[u]+G[u][v]
+        p[v]=u
+        array[v]=d[u]+G[u][v]
+x=9999999
+G=[[0,10,x,x,5],[x,0,1,x,2],[x,x,0,4,x],[7,x,6,0,x],[x,3,9,2,0]]
+s=0
+d=[]
+p=[]
+intialise(G,s)
+array=d.copy()
+n=len(array)
+while(n!=0):
+    u=min(array)
+    ind2=array.index(u)
+    array[ind2]=x
+    ind=d.index(u)
+    n=n-1
+    for i in range(len(G[0])):
+        for j in range(len(G[0])):
+            if(G[i][j]==0 or G[i][j]==x):
+                pass
+            else:
+                if(i==ind):
+                    relax(ind,j,G)
+print("minimum distance from source vertex :", d)
+print("precedence of all vertex from source vertex : ", p)
