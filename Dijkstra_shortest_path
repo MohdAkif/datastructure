@@ -11,7 +11,7 @@ def relax(u,v,G):
         d[v]=d[u]+G[u][v]
         p[v]=u
         array[v]=d[u]+G[u][v]
-x=9999999
+x=float("inf")
 G=[[0,10,x,x,5],[x,0,1,x,2],[x,x,0,4,x],[7,x,6,0,x],[x,3,9,2,0]]
 s=0
 d=[]
