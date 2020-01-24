@@ -17,7 +17,34 @@ def insert(root,node):
                 root.left=node
             else:
                 insert(root.left,node) 
-
+def inordersuccessor(root):
+    c=root
+    while(c.left!=None):
+        c=c.left
+    return c
+    
+def deletion(root,s):
+    if(root==None):
+        return r
+    if(s<root.v):
+        root.left=deletion(root.left,s)
+    elif(s>root.v):
+        root.right=deletion(root.right,s)
+    else:
+        #if node have only one child
+        if(root.left==None):
+            temp=root.right
+            root=None
+            return temp
+        elif(root.right==None):
+            temp=root.left
+            root=None
+            return temp
+        io=inordersuccessor(root.right)
+        root.v=io.v
+        root.right=deletion(root.right,io.v)
+    return root
+    
 def pre(root):
     if(root):
         pre(root.left)
@@ -69,7 +96,7 @@ if(search(r,4)):
 else:
     print("no")
 
-print('maximum number is = {}',(max_(r).val))
+print('maximum number is = {x}'.format(x=max_(r).val))
 print(min_(r).val)
 print(Height(r))
 print(total(r))
