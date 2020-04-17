@@ -1,0 +1,70 @@
+#making heap data structure
+class Heap:
+    def __init__(self,arr):
+        self.arr=arr
+        self.n=len(arr)
+        for i in range(self.n//2,-1,-1):
+            self.min_heapify(i)
+    #method which maintain the min heapify property
+    def min_heapify(self,i):
+        left=2*i+1
+        right=2*i+2
+        if(left<self.n and arr[left].data<self.arr[i].data):
+            m=left
+        else:
+            m=i
+        if(right<self.n and arr[right].data<self.arr[m].data):
+            m=right
+        if(i!=m):
+            temp=self.arr[m]
+            self.arr[m]=self.arr[i]
+            self.arr[i]=temp
+            self.min_heapify(m)
+    #method to insert new value in heap
+    def insert(self,data):
+        self.arr.insert(0,data)
+        self.n+=1
+        self.min_heapify(0)
+        
+    #method which give the min value and maintain the heap property
+    def extract_min(self):
+        x=self.arr[0]
+        self.arr[0]=self.arr[-1]
+        self.arr[-1]=x
+        ans=self.arr.pop()
+        self.n-=1
+        self.min_heapify(0)
+        return ans
+#creating the Haffman node having two parameter 
+class Haffman_node:
+    def __init__(self,data,c):
+        self.char=c
+        self.data=data
+        self.left=None
+        self.right=None
+#function to display the Haffman-code
+def display(root,string):
+    if(root.left is None and root.right is None):
+        print(root.char,end=" : ")
+        print(string)
+        return 
+    display(root.left,string+"0")
+    display(root.right,string+"1")
+#counting the frequency of character   
+arr2={'f':5,'e':9,'c':12,'b':13,'d':16,'a':45}
+arr=[]
+#making each frequency as single Haffman_node and assinging there corresponding character
+for key,value in arr2.items():
+    arr.append(Haffman_node(value,key))
+H=Heap(arr)
+#for each haffman_node we are now merging the nodes and making the Haffman Tree
+for i in range(len(arr)-1):
+    x=H.extract_min()
+    y=H.extract_min()
+    i=Haffman_node(x.data+y.data,"")
+    i.left=x
+    i.right=y
+    H.insert(i)
+    
+#display the Haffman_code   
+display(H.arr[0],"")
