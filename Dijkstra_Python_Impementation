@@ -1,79 +1,96 @@
-import math
-#Creating Heap for Vertex
-class Heap():
-    #Intialally we creating the heap
-    def __init__(self,size,array):
-        self.n=size
-        self.array=array
-        for i in range(size//2-1,-1,-1):
+class Heap:
+    def __init__(self,n,arr):
+        self.arr=arr;
+        self.size=n
+        for i in range(n//2,-1,-1):
             self.min_heapify(i)
-    #method to maintain the property of heap
+        self.Map={}
+        for i in range(n):
+            self.Map[i]=i
+        #print(self.arr)
+    def isEmpty(self):
+        if(self.size==0):
+            return True
+        return False
     def min_heapify(self,i):
-        l=2*i+1
-        r=2*i+2
-        if(l<self.n and (self.array[i][1]>self.array[l][1])):
-            smallest=l
-        else:
-            smallest=i
-        if(r<self.n and self.array[smallest][1]>self.array[r][1]):
-            smallest=r
-        if(i!=smallest):
-            temp=self.array[i]
-            self.array[i]=self.array[smallest]
-            self.array[smallest]=temp
-            self.min_heapify(smallest)
+        s=i ; l=2*i+1 ; r=2*i+2
+        if(l<self.size and self.arr[l][0]<self.arr[s][0]):
+            s=l
+        if(r<self.size and self.arr[r][0]<self.arr[s][0]):
+            s=r
+        if(s!=i):
+            temp=self.arr[i]
+            self.arr[i]=self.arr[s]
+            self.arr[s]=temp
+            temp=self.Map[self.Map[i]]
+            self.Map[self.Map[i]]=self.Map[self.Map[s]]
+            self.Map[self.Map[s]]=temp
+            self.min_heapify(s)
+                     
     def extract_min(self):
-        temp=self.array[0]
-        self.array[0]=self.array[self.n-1]
-        self.array[self.n-1]=temp
-        x=self.array[self.n-1][0]
-        self.n-=1
+        temp=self.arr[0]
+        self.arr[0]=self.arr[self.size-1]
+        self.arr[self.size-1]=temp
+        temp=self.Map[0]
+        self.Map[0]=self.Map[self.size-1]
+        self.Map[self.size-1]=temp
+        val,index=self.arr[self.size-1]
+        self.size-=1;
         self.min_heapify(0)
-        return x
+        return index
+    def add(self,val):
+        self.arr[self.size][0]=val
+        curr=self.size
+        ptr=int((self.size-1)/2)
+        self.size+=1
+        while(self.arr[ptr][0]>self.arr[curr][0]):
+            temp=self.arr[ptr]
+            self.arr[ptr]=self.arr[curr]
+            self.arr[curr]=temp
+            curr=ptr
+            ptr=int((curr-1)/2)
+    def change(self,x,val):
+        #print(x,val,self.Map[x])
+        curr=self.Map[x]
+        self.arr[curr][0]=val
+        ptr=int((curr-1)/2)
+        while(self.arr[ptr][0]>self.arr[curr][0]):
             
+            temp=self.arr[ptr]
+            self.arr[ptr]=self.arr[curr]
+            self.arr[curr]=temp      
+            
+            temp=self.Map[self.Map[ptr]]
+            self.Map[self.Map[ptr]]=self.Map[self.Map[curr]]
+            self.Map[self.Map[curr]]=temp
+            
+            curr=ptr
+            ptr=int((curr-1)/2)
+        #print(self.arr,self.Map)
 class Graph:
-    def __init__(self,total):
-        self.vertex=total
+    def __init__(self,n):
+        self.n=n
         self.adjancy={}
+        for i in range(n):
+            self.adjancy[i]=[]
         self.weight={}
-        for node in range(total):
-            self.adjancy[node]=[]
-    def relax(self,u,v,w,H):
-        print(u,v,w)
-        if(self.distance[u][1]+w<self.distance[v][1]):
-            self.distance[v][1]=self.distance[u][1]+w
-            self.predecesor[v]=u
-            H.array[v][1]=self.distance[u][1]+w
-        print("heap : ",H.array)
-        print("distance : ",self.distance)
     def add_edge(self,u,v,w):
         self.adjancy[u].append(v)
         self.weight[(u,v)]=w
-    def display(self):
-        for i in range(self.vertex):
-            print(i,'-->',self.adjancy[i])
-    def dijkstra(self,src):
-        self.distance=[[i,math.inf] for i in range(self.vertex)]
-        self.heap=[[i,math.inf] for i in range(self.vertex)]
-        self.predecesor=[-1]*self.vertex
-        self.distance[src][1]=0
-        H=Heap(self.vertex,self.heap)
-        print(self.distance)
-        while(H.n!=0):
-            u=H.extract_min()
+    def dijkstra(self,s):
+        import math
+        self.distance=[math.inf for _ in range(self.n)]
+        temp=[[math.inf,i] for i in range(self.n)]
+        self.distance[s]=0
+        temp[s]=[0,s]
+        q=Heap(self.n,temp)
+        while(not q.isEmpty()):
+            u=q.extract_min()
             print(u)
             for v in self.adjancy[u]:
-                self.relax(u,v,self.weight[(u,v)],H)
-        
-#taking sample input for checking my code           
-arr=[[1,2,10],[1,5,5],[2,3,1],[2,5,2],[3,4,4],[4,3,6],[4,1,7],[5,2,3],[5,4,2],[5,3,9]]
-G=Graph(5)
-for i in arr:
-    G.add_edge(i[0]-1,i[1]-1,i[2])
-G.display()
-print(G.weight)
-G.dijkstra(0)
-k=0
-for i in G.distance:
-    print(0,k,"-->",i[1])
-    k+=1
+                #print(v)
+                if(self.distance[u]+self.weight[(u,v)]<self.distance[v]):
+                    self.distance[v]=self.distance[u]+self.weight[(u,v)]
+                    q.change(v,self.distance[u]+self.weight[(u,v)])
+            print(q.arr)
+        print(self.distance)
